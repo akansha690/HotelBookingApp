@@ -1,11 +1,7 @@
 package middleware
 
 import (
-	dbConfig "AuthInGo/config/db"
 	env "AuthInGo/config/env"
-	repo "AuthInGo/db/repositories"
-	"AuthInGo/dto"
-	"AuthInGo/utils"
 	"context"
 	"fmt"
 	"net/http"
@@ -47,179 +43,11 @@ func JWTNextMiddleware(next http.Handler) http.Handler {
 		req_context := r.Context()
 		cxt := context.WithValue(req_context, "userID", strconv.FormatFloat(userId, 'f', 0, 64))
 		cxt = context.WithValue(cxt, "email", email)
+		// r.Header.Set("X-User-ID",  strconv.FormatFloat(userId, 'f', 0, 64))
 		next.ServeHTTP(w, r.WithContext(cxt))
 	})
 
 }
 
-func RequireAllRoles(roles ...string) func(http.Handler) http.Handler {
-
-	// function that can create a middleware for checking the above set of roles
-
-	return func(next http.Handler) http.Handler {
-
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-			userIdStr := r.Context().Value("userID").(string)
-			userId, err := strconv.ParseInt(userIdStr, 10, 64)
-			if err != nil {
-				http.Error(w, "Invalid user ID", http.StatusUnauthorized)
-				return
-			}
-
-			dbConn, dbErr := dbConfig.SetUpDB()
-			if dbErr != nil {
-				http.Error(w, "Database connection error: "+dbErr.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			urr := repo.NewUserRoleRepository(dbConn)
-
-			hasAllRoles, hasAllRolesErr := urr.HasAllRoles(userId, roles)
-			fmt.Println("userid", userId, "roles", roles, "hasAllRoles", hasAllRoles)
-			if hasAllRolesErr != nil {
-				http.Error(w, "Error checking user roles: "+hasAllRolesErr.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			if !hasAllRoles {
-				http.Error(w, "Forbidden: You do not have the required roles", http.StatusForbidden)
-				return
-			}
-
-			fmt.Println("User has all required roles:", roles)
-
-			next.ServeHTTP(w, r)
-		})
-	}
-
-}
-
-func RequireAnyRole(roles ...string) func(http.Handler) http.Handler {
-
-	return func(next http.Handler) http.Handler {
-
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-			userIdStr := r.Context().Value("userID").(string)
-			userId, err := strconv.ParseInt(userIdStr, 10, 64)
-			if err != nil {
-				http.Error(w, "Invalid user ID", http.StatusUnauthorized)
-				return
-			}
-
-			dbConn, dbErr := dbConfig.SetUpDB()
-			if dbErr != nil {
-				http.Error(w, "Database connection error: "+dbErr.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			urr := repo.NewUserRoleRepository(dbConn)
-
-			hasAnyRole, hasAnyRolesErr := urr.HasAnyRole(userId, roles)
-			fmt.Println("userid", userId, "roles", roles, "hasAnyRole", hasAnyRole)
-			if hasAnyRolesErr != nil {
-				http.Error(w, "Error checking user roles: "+hasAnyRolesErr.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			if !hasAnyRole {
-				http.Error(w, "Forbidden: You do not have the required roles", http.StatusForbidden)
-				return
-			}
-
-			fmt.Println("User has all required roles:", roles)
-
-			next.ServeHTTP(w, r)
-		})
-	}
-}
 
 
-func CreateRoleRequestValidator(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var payload dto.CreateRoleRequestDTO
-
-		// Read and decode the JSON body into the payload
-		if err := utils.ParseJSONToObject(r, &payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Invalid request body", err)
-			return
-		}
-
-		// Validate the payload using the Validator instance
-		if err := utils.Validator.Struct(payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Validation failed", err)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "payload", payload)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-func UpdateRoleRequestValidator(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var payload dto.UpdateRoleRequestDTO
-
-		// Read and decode the JSON body into the payload
-		if err := utils.ParseJSONToObject(r, &payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Invalid request body", err)
-			return
-		}
-
-		// Validate the payload using the Validator instance
-		if err := utils.Validator.Struct(payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Validation failed", err)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "payload", payload)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-func AssignPermissionRequestValidator(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var payload dto.AssignPermissionRequestDTO
-
-		// Read and decode the JSON body into the payload
-		if err := utils.ParseJSONToObject(r, &payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Invalid request body", err)
-			return
-		}
-
-		// Validate the payload using the Validator instance
-		if err := utils.Validator.Struct(payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Validation failed", err)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "payload", payload)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-func RemovePermissionRequestValidator(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var payload dto.RemovePermissionRequestDTO
-
-		// Read and decode the JSON body into the payload
-		if err := utils.ParseJSONToObject(r, &payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Invalid request body", err)
-			return
-		}
-
-		// Validate the payload using the Validator instance
-		if err := utils.Validator.Struct(payload); err != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Validation failed", err)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "payload", payload)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}

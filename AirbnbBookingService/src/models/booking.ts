@@ -16,10 +16,10 @@ class Booking extends Model<InferAttributes<Booking>, InferCreationAttributes<Bo
     declare checkOutDate : Date;
     declare createdAt : CreationOptional<Date>;
     declare updatedAt : CreationOptional<Date>;
-    declare bookingAmount : number;
-    declare bookingId : number;
+    declare bookingAmount?: number;
+    declare bookingId ?: number | null;
     declare categoryId : number;
-    declare status : BookingStatus;
+    declare status ?: BookingStatus;
     declare idempotencyKey : CreationOptional<string>;
     declare numberOfGuests : number;
 
@@ -35,10 +35,6 @@ Booking.init({
     userId:{
         type:DataTypes.INTEGER,
         allowNull:false,
-        // references:{
-        //     model:User,
-        //     key:"id"
-        // }
     },
     hotelId:{
         type:DataTypes.INTEGER,
@@ -54,18 +50,16 @@ Booking.init({
     },
     bookingId:{
         type:DataTypes.INTEGER,
-        allowNull: false,
-        unique:true
+        unique:true,
+        allowNull:true
     },
     bookingAmount:{
         type:DataTypes.FLOAT,
-        allowNull:false
+        allowNull:true
     },
     status:{
         type:DataTypes.ENUM('BOOKED', 'PENDING', 'CANCELLED'),
-        defaultValue: BookingStatus.PENDING,
-        allowNull:false
-    
+        defaultValue: BookingStatus.PENDING
     },
     createdAt:{
         type:DataTypes.DATE

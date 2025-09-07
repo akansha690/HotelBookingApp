@@ -28,8 +28,6 @@ const redisConnection = ()=>{
 
 export const getRedisConnection = redisConnection();
 export const redlock = new Redlock([getRedisConnection()], {
-    driftFactor:0.01,
     retryCount:10,
     retryDelay:200,
-    retryJitter:200
 })

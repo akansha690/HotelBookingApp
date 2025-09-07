@@ -1,18 +1,16 @@
 
-DB_FOLDER=db/migrations
+MIGRATIONS_DIR=db/migrations
 DB_URL=root:admin12@tcp(127.0.0.1:3306)/airbnb_auth_dev
 
 migrate-create:
-		goose -dir $(DB_FOLDER) create $(name) sql
+	goose -dir $(MIGRATIONS_DIR) create $(name) sql
 migrate-up:
-		goose -dir $(DB_FOLDER) mysql "$(DB_URL)" up
+	goose -dir $(MIGRATIONS_DIR) mysql "$(DB_URL)" up
 migrate-down:
-		goose -dir $(DB_FOLDER) mysql "$(DB_URL)" down				
-
+	goose -dir $(MIGRATIONS_DIR) mysql "$(DB_URL)" down				
 # Rollback all migrations and reset database # gmake migrate-reset
 migrate-reset:
 	goose -dir $(MIGRATIONS_DIR) mysql "$(DB_URL)" reset
-
 # Show current migration status # gmake migrate-status
 migrate-status:
 	goose -dir $(MIGRATIONS_DIR) mysql "$(DB_URL)" status

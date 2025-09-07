@@ -40,7 +40,7 @@ func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 		utils.WriteErrorResponse(w, http.StatusInternalServerError, "Error logging in user", err)
 		return
 	}
-	utils.WriteSuccessResponse(w, http.StatusOK, "User logged in successfully", token)
+	utils.WriteSuccessResponse(w, http.StatusOK, "User logged in successfully",token)
 
 }
 

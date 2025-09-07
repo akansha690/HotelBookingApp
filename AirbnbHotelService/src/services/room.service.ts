@@ -1,5 +1,4 @@
 
-
 import { createRoomDTO, updateBookingIdRoomDTO } from "../dto/room.dto";
 import { RoomRepository } from "../repositories/room.repository";
 import { roomCategoryRepository } from "./roomCategory.service";
@@ -52,7 +51,7 @@ export async function updateRoom(id:number, data : Partial<createRoomDTO>){
     const room = await roomRepository.update(id, data)
     return room
 }
-export async function getAllRooms(roomCategoryId:number, checkInDate:Date, checkOutDate:Date){
+export async function getAllRooms(roomCategoryId:number, checkInDate:string, checkOutDate:string){
     const roomCategory = await roomCategoryRepository.findById(roomCategoryId)
     if(!roomCategory){
         throw new Error("RoomCategory does not exists")
@@ -83,6 +82,10 @@ export async function roomBooking(roomId:number){
 export async function updateBookingIdOfBookedRoomService(data:updateBookingIdRoomDTO){
     const updatedRoom = await roomRepository.updateBookingId(data.bookingId, data.roomsId);
     return updatedRoom;
+}
+export async function reUpdateBookingIdOfBookedRoomService(bookingId:number){
+    const reUpdatedRoom = await roomRepository.reupdateBookingId(bookingId);
+    return reUpdatedRoom;
 }
 
 

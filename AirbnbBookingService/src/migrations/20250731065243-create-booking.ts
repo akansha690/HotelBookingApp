@@ -6,12 +6,12 @@ module.exports = {
     await queryInterface.sequelize.query(
       `CREATE TABLE IF NOT EXISTS bookings(
           id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-          userId INT NOT NULL,
-          hotelId INT NOT NULL,
-          bookingAmount FLOAT NOT NULL,
-          status ENUM('BOOKED', 'PENDING', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
-          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+          user_id INT NOT NULL,
+          hotel_id INT NOT NULL,
+          booking_amount FLOAT,
+          status ENUM('BOOKED', 'PENDING', 'CANCELLED') DEFAULT 'PENDING',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )`
     )
         

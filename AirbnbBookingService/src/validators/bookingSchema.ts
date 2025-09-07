@@ -2,16 +2,17 @@ import { z } from "zod";
 import { BookingStatus } from "../models/booking";
 
 export const bookingSchema = z.object({
-    userId: z.number(),
+    // userId: z.number(),
     hotelId: z.number(),
-    bookingAmount: z.number().positive(), 
-    status: z.nativeEnum(BookingStatus), 
+    bookingAmount: z.number().positive().optional(), 
+    status: z.nativeEnum(BookingStatus).optional(), 
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
     idempotencyKey: z.string().uuid().optional(), 
     numberOfGuests: z.number().min(1),
-    checkInDate : z.date(),
-    checkOutDate: z.date(),
-    bookingId: z.number()
+    checkInDate: z.string().transform((val) => new Date(val)),
+    checkOutDate: z.string().transform((val) => new Date(val)),
+    bookingId: z.number().nullable().optional(),
+    categoryId : z.number()
 })
 

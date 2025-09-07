@@ -2,12 +2,12 @@
 import { Request, Response, NextFunction } from "express";
 
 import { StatusCodes } from "http-status-codes";
-import { createRoom, deleteRoom, getRoomById, updateRoom, getAllRooms, isRoomAvailable, roomBooking, updateBookingIdOfBookedRoomService } from "../services/room.service";
+import { createRoom, deleteRoom, getRoomById, updateRoom, getAllRooms, isRoomAvailable, roomBooking, updateBookingIdOfBookedRoomService, reUpdateBookingIdOfBookedRoomService } from "../services/room.service";
 
 export async function createRoomHandler(req: Request, res: Response, next: NextFunction) {
 
-    const categoryId = Number(req.params.categoryId); 
-    const roomResponse = await createRoom(categoryId, req.body);
+    const roomTypeId = Number(req.params.categoryId); 
+    const roomResponse = await createRoom(roomTypeId, req.body);
     res.status(StatusCodes.CREATED).json({
         message: "room created successfully",
         data: roomResponse,
@@ -18,10 +18,9 @@ export async function createRoomHandler(req: Request, res: Response, next: NextF
 export async function getAllAvailableRoomsHandler(req: Request, res: Response, next: NextFunction) {
     // 1. Call the service layer
 
-    let {categoryId, checkInDate, checkOutDate} = req.body
-     categoryId = Number(categoryId);
-     checkInDate = new Date(checkInDate as string);
-     checkOutDate = new Date(checkOutDate as string);
+    const categoryId = Number(req.query.categoryId);
+    const checkInDate = new Date(req.query.checkInDate as string).toISOString();
+    const checkOutDate = new Date(req.query.checkOutDate as string).toISOString();
 
     const roomsResponse = await getAllRooms(categoryId, checkInDate, checkOutDate);
     // 2. Send the response
@@ -94,12 +93,29 @@ export async function roomBookingHandler(req: Request, res: Response, next: Next
 
 export const updateRoomBookingId = async (req: Request, res: Response, next: NextFunction) =>  {
     
-        const data = req.body
+    const bookingId = Number(req.query.bookingId);
+    let roomsId: number[] = [];
+    roomsId = (req.query['roomsId[]'] as string[]).map(id => Number(id));
+    console.log(roomsId)
+
+    let data = {bookingId, roomsId}
         const finalBooking = await updateBookingIdOfBookedRoomService(data);
-        res.json({
-            message: "Rooms updated successfully",
+        res.status(StatusCodes.OK).json({
+            message: "Rooms BookingId updated successfully",
             data: finalBooking,
             success: true
         })
+
+}
+
+export const reUpdateRoomBookingIdHandler = async (req: Request, res: Response, next: NextFunction) =>  {
+    
+    const bookingId = Number(req.query.bookingId);
+    const reupdate = await reUpdateBookingIdOfBookedRoomService(bookingId);
+    res.status(StatusCodes.OK).json({
+        message: "Rooms BookingId Re-updated successfully",
+        data: reupdate,
+        success: true
+    })
 
 }

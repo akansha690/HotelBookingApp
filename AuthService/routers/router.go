@@ -13,16 +13,15 @@ type Router interface{
 	Register(r chi.Router) 
 }
 
-func SetUpRouter(UserRouter Router, roleRouter Router) *chi.Mux {
+func SetUpRouter(UserRouter Router) *chi.Mux {
 	chiRouter:=chi.NewRouter()
 	// chiRouter.Get("/hello", controller.UserController.Hello)
 	
 	chiRouter.Use(middleware.RateLimiMiddleware)
-	// chiRouter.HandleFunc("/fakestoreservice/*", utils.ProxyToService("https://fakestoreapi.in", "/fakestoreservice"))
-	chiRouter.HandleFunc("/hotels*", utils.ProxyToService("http://localhost:3000", "/hotels"))
-	chiRouter.HandleFunc("/bookings*", utils.ProxyToService("http://localhost:3001", "/bookings"))
+	// chiRouter.Use(middleware.JWTNextMiddleware)
+	chiRouter.With(middleware.JWTNextMiddleware).HandleFunc("/hotelservice/*", utils.ProxyToService("http://localhost:3000", "/hotelservice"))
+	chiRouter.With(middleware.JWTNextMiddleware).HandleFunc("/bookingservice/*", utils.ProxyToService("http://localhost:3001", "/bookingservice"))
 	
 	UserRouter.Register(chiRouter) 
-	roleRouter.Register(chiRouter)
 	return chiRouter
 }

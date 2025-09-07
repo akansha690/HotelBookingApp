@@ -2,53 +2,95 @@
 import { serverConfig } from "../config";
 import { redlock } from "../config/redis.config";
 import { booking, updateRoomDTO } from "../dto/booking.dto";
-import {getAllAvailableRooms, updateBookingIdOfRoom} from '../gateway/hotel.api'
+import {getAllAvailableRooms, reUpdateBookingIdOfRoom, updateBookingIdOfRoom} from '../gateway/hotel.api'
+import { BookingStatus } from "../models/booking";
 import sequelize from "../models/sequelize";
 import {
   createBooking,
+  deleteBooking,
   findBookingByIdempotencyKey,
 } from "../repository/booking";
 import { BadRequestError  } from "../utils/errors/app.error";
 
-// import {v4 as uuid} from 'uuid';
 
 export const createBookingService = async function (
   bookingInput: booking,
   key: any
 ) {
   const ttl = serverConfig.LOCK_TTL;
-  const bookingResource = `locks:hotel:${bookingInput.hotelId}`;
-  const availableRooms = await getAllAvailableRooms(bookingInput.categoryId, new Date(bookingInput.checkInDate), new Date(bookingInput.checkOutDate) )
-  if(availableRooms.length === 0){
+  const availableRooms = await getAllAvailableRooms(bookingInput.categoryId, bookingInput.checkInDate, bookingInput.checkOutDate)
+  if(availableRooms.data.length === 0){
       throw new BadRequestError("Rooms not available"); 
   }
+  const bookingResource = availableRooms.data.map((room: updateRoomDTO)=> `locks:room:${room.id}` ) ;
+  const lock = await redlock.acquire(bookingResource, ttl);
   try {
-    await redlock.acquire([bookingResource], ttl);
     return await sequelize.transaction(async (t) => {
-      
-      const booking = await createBooking(bookingInput, t);
-      await updateBookingIdOfRoom(booking.id, availableRooms.map((room:updateRoomDTO)=> room.id))
+      // console.log(availableRooms.data)
+      const booking = await createBooking(bookingInput);
+      booking.idempotencyKey = key
+      let totalAmount = availableRooms.data.reduce(
+        (sum: number, room: any) => sum + room.price,
+        0
+      );
+      booking.bookingAmount = booking.numberOfGuests * totalAmount,
+      await booking.save({ transaction: t });
+      const updatedRoom = await updateBookingIdOfRoom(booking.id, availableRooms.data.map((room:updateRoomDTO)=> room.id))
       return {
+          bookingAmount : booking.numberOfGuests * totalAmount,
           bookingId  : booking.id,
-          idempotencyKey : key
+          idempotencyKey : key,
+          updatedRoom
       }
     });
   } 
   catch (error:any) {
-    throw new Error("Failed to acquire the lock on this resource");
+    console.log(error);
+    throw error; 
+  } 
+  finally {
+    if (lock) {
+      try {
+        await lock.release();
+      } catch (releaseError) {
+        console.log("Failed to release lock:", releaseError);
+      }
+    }
   }
-};
+}
+
 
 export const finalizeBookingService = async function (bookingInput: booking, key: string) {
-  try {
-    if(key){
-        const alreadyBooking = await findBookingByIdempotencyKey(key);
-        if(alreadyBooking){
-            return alreadyBooking;
-        }
+  let alreadyBooking = await findBookingByIdempotencyKey(key);
+  return await sequelize.transaction(async (t) => {
+    try {
+      if(key){
+          if(alreadyBooking){
+              alreadyBooking.status = BookingStatus.BOOKED
+              alreadyBooking.bookingId = alreadyBooking.id
+              await alreadyBooking.save()
+              return alreadyBooking;
+          }
+      }
+      throw new Error("Booking not found for finalization");
+    } catch (error) {
+        throw error;
     }
-    throw new Error("Booking not found for finalization");
+  });
+
+};
+
+
+
+export const cancelBooking = async function(bookingId:number){
+  try {
+    await sequelize.transaction( async (t)=>{
+        await deleteBooking(bookingId);
+        await reUpdateBookingIdOfRoom(bookingId)
+    })
+
   } catch (error) {
+    console.log(error);
     throw error;
   }
-};
+}

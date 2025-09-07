@@ -34,8 +34,8 @@ export class RoomRepository extends BaseRepository<Room> {
         }
     }
 
-    async findByCategory(roomTypeId: number, checkInDate:Date, checkOutDate:Date) {
-        return this.model.findAll({
+    async findByCategory(roomTypeId: number, checkInDate:string, checkOutDate:string) {
+        return await this.model.findAll({
             where: {
                 roomTypeId:roomTypeId,
                 bookingId: null,
@@ -47,7 +47,7 @@ export class RoomRepository extends BaseRepository<Room> {
     }
 
     async findByHotel(hotelId: number) {
-        return this.model.findAll({
+        return await this.model.findAll({
             where: {
                 hotelId:hotelId,
                 deletedAt: null
@@ -56,16 +56,34 @@ export class RoomRepository extends BaseRepository<Room> {
     }
 
     async updateBookingId(bookingId: number, roomsId:number[]){
-        return this.model.update(
-            {
-                bookingId:bookingId
-            },
+        let allRooms = await this.model.findAll(
             {
                 where:{
-                    id: roomsId       //Sequelize automatically translates array into an SQL IN query.
-                    
-                }
+                    id:roomsId    //Sequelize automatically translates array into an SQL IN query.
+                } 
             }
         )
+        for(let room of allRooms){
+            room.bookingId = bookingId
+            await room.save()
+        }
+        return allRooms
+
+    }
+
+    async reupdateBookingId(bookingId: number){
+        let rooms = await this.model.findAll(
+            {
+                where:{
+                    bookingId
+                }
+            }
+        ) 
+        for(let room of rooms){
+            room.bookingId = null;
+            await room.save();
+        }
+        return rooms;
+        
     }
 }

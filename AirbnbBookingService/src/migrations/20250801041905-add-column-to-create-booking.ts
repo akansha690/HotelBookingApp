@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.sequelize.query(
       `
         ALTER TABLE bookings
-        ADD COLUMN idempotencyKey VARCHAR(250) UNIQUE DEFAULT NULL;
+        ADD COLUMN idempotency_key VARCHAR(250) UNIQUE DEFAULT NULL;
       `
     )
   },
@@ -14,7 +14,7 @@ module.exports = {
     await queryInterface.sequelize.query(
       `
         ALTER TABLE bookings
-        DROP COLUMN idempotencyKey;
+        DROP COLUMN idempotency_key;
       `
     )
   }

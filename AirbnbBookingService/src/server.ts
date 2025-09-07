@@ -2,7 +2,7 @@ import express from 'express';
 import { serverConfig } from './config';
 import v1Router from './routers/v1/index.router';
 import v2Router from './routers/v2/index.router';
-import { appErrorHandler, genericErrorHandler } from './middlewares/error.middleware';
+import { appErrorHandler } from './middlewares/error.middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import sequelize from './models/sequelize';
@@ -28,21 +28,16 @@ app.use('/api/v2', v2Router);
  */
 
 app.use(appErrorHandler);
-app.use(genericErrorHandler);
-
 
 app.listen(serverConfig.PORT, async() => {
     logger.info(`Server is running on http://localhost:${serverConfig.PORT}`);
     logger.info(`Press Ctrl+C to stop the server.`);
     await sequelize.authenticate();
 
-    const notification : NotificationDto={
+   const notification : NotificationDto={
       to : "John booking",
       subject: "Dev Project",
-      templateId: "123",
-      params:{
-         key : "abc"
-      }
+      body : `Hey, Thanks for booking with Airbnb welcome!!!`
    }
 
    sendMailToQueue(notification);

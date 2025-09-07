@@ -45,17 +45,10 @@ func (app *Application) Run() error{
 	us := service.NewUserService(ur)
 	uc := controller.NewUserController(us)
 	userRouter := router.NewUserRouter(uc)
-	// role...
-	rpr := db.NewRolePermissionRepository(app.Db)
-	urr := db.NewUserRoleRepository(app.Db)
-	rr:= db.NewRoleRepository(app.Db)
-	rs:= service.NewRoleService(rr, rpr, urr)
-	rc:= controller.NewRoleController(rs)
-	roleRouter:= router.NewRoleRouter(rc)
 
 	server := &http.Server{
 		Addr: app.Config.Addr,
-		Handler: router.SetUpRouter(userRouter, roleRouter),
+		Handler: router.SetUpRouter(userRouter),
 		ReadTimeout: 10 * time.Second,
 		WriteTimeout: 10* time.Second,
 	}

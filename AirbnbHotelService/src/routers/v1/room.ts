@@ -1,7 +1,7 @@
 import express from 'express';
 import { reqValidator } from '../../validators';
 import { roomSchema } from '../../validators/roomSchema';
-import { createRoomHandler, deleteRoomHandler, getRoomHandler, roomAvailabilityHandler, roomBookingHandler, updateRoomBookingId, updateRoomHandler } from '../../controllers/room.controller';
+import { createRoomHandler, deleteRoomHandler, getRoomHandler, reUpdateRoomBookingIdHandler, roomAvailabilityHandler, roomBookingHandler, updateRoomBookingId, updateRoomHandler } from '../../controllers/room.controller';
 
 
 
@@ -18,5 +18,6 @@ roomRouter.delete('/rooms/:id/delete', deleteRoomHandler)
 roomRouter.get('/rooms/:id/availability', roomAvailabilityHandler)
 roomRouter.post('/rooms/:id/book', roomBookingHandler)
 roomRouter.patch('/update-booking-id', updateRoomBookingId)
+roomRouter.patch('/reupdate-booking-id', reUpdateRoomBookingIdHandler)
 
 export default roomRouter;

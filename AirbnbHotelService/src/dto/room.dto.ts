@@ -1,9 +1,8 @@
 export type createRoomDTO = {
     hotelId: number;
-    roomCategoryId: number;
     dateOfAvailability: Date;
     price: number;
-    bookingId?: number | null;
+    roomNo:number
 }
 
 export type updateBookingIdRoomDTO = {

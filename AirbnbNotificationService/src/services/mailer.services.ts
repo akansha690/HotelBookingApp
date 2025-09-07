@@ -13,3 +13,5 @@ export const sendEmail = async(to:string, subject:string, body:string)=>{
         throw new Error("Error while sending email")
     }
 }
+
+

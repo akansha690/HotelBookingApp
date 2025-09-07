@@ -7,7 +7,7 @@ module.exports = {
     await queryInterface.sequelize.query(
       `
         ALTER TABLE bookings
-        ADD COLUMN numberOfGuests INT NOT NULL DEFAULT 0
+        ADD COLUMN number_of_guests INT NOT NULL DEFAULT 0
 
       `
     )
@@ -17,7 +17,7 @@ module.exports = {
     await queryInterface.sequelize.query(
       `
         ALTER TABLE bookings 
-        DROP COLUMN numberOfGuests
+        DROP COLUMN number_of_guests
         
       `
     )

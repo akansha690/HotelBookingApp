@@ -5,7 +5,6 @@ import { MAILER_QUEUE } from "../queues/mailer.queue";
 import { MAIL_PAYLOAD } from "../producers/mail.producer";
 import { connectRedisObject } from "../config/redis.config";
 import { sendEmail } from "../services/mailer.services";
-import { renderTemplate } from "../renderTemplates/template.index";
 
 export const setUpWorkerMail = async()=>{
 
@@ -18,7 +17,7 @@ export const setUpWorkerMail = async()=>{
 
             console.log(`payload is:  ${JSON.stringify(job.data)}` );
             const payload= job.data;
-            const content = await renderTemplate(payload.templateId, payload.params);
+            const content = payload.body;
             await sendEmail(payload.to, payload.subject, content);
             
         },
