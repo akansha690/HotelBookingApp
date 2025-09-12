@@ -43,7 +43,6 @@ func JWTNextMiddleware(next http.Handler) http.Handler {
 		req_context := r.Context()
 		cxt := context.WithValue(req_context, "userID", strconv.FormatFloat(userId, 'f', 0, 64))
 		cxt = context.WithValue(cxt, "email", email)
-		// r.Header.Set("X-User-ID",  strconv.FormatFloat(userId, 'f', 0, 64))
 		next.ServeHTTP(w, r.WithContext(cxt))
 	})
 

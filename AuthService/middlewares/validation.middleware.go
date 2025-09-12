@@ -7,27 +7,27 @@ import (
 	"net/http"
 )
 
-func UserCreateRequestMiddleware(next http.Handler) http.Handler{
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var payload *dto.CreateUserDTO
-		json := utils.ParseJSONToObject(r, &payload)
-		if json != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Invalid request payload", json)
-			return
-		}
-		validationErr := utils.Validator.Struct(payload)
-		if validationErr != nil {
-			utils.WriteErrorResponse(w, http.StatusBadRequest, "Validation error", validationErr)
-			return
-		}
-		// original context(old) : parent context
-		req_context := r.Context()
-		// passing payload to this context and create a new context i.e cxt
-		cxt := context.WithValue(req_context, "payload", payload)
-		// r.WithContext() replaces its context with your new one (cxt)
-		next.ServeHTTP(w, r.WithContext(cxt))
-	})
-}
+// func UserCreateRequestMiddleware(next http.Handler) http.Handler{
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		var payload *dto.CreateUserDTO
+// 		json := utils.ParseJSONToObject(r, &payload)
+// 		if json != nil {
+// 			utils.WriteErrorResponse(w, http.StatusBadRequest, "Invalid request payload", json)
+// 			return
+// 		}
+// 		validationErr := utils.Validator.Struct(payload)
+// 		if validationErr != nil {
+// 			utils.WriteErrorResponse(w, http.StatusBadRequest, "Validation error", validationErr)
+// 			return
+// 		}
+// 		// original context(old) : parent context
+// 		req_context := r.Context()
+// 		// passing payload to this context and create a new context i.e cxt
+// 		cxt := context.WithValue(req_context, "payload", payload)
+// 		// r.WithContext() replaces its context with your new one (cxt)
+// 		next.ServeHTTP(w, r.WithContext(cxt))
+// 	})
+// }
 
 func UserLoginRequestMiddleware(next http.Handler) http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -42,8 +42,9 @@ func UserLoginRequestMiddleware(next http.Handler) http.Handler{
 			utils.WriteErrorResponse(w, http.StatusBadRequest, "Validation error", validationErr)
 			return
 		}
+		// original context(old) : parent context
 		req_context := r.Context()
-		
+		// passing payload to this context and create a new context i.e cxt
 		cxt := context.WithValue(req_context, "payload", payload)
 		
 		next.ServeHTTP(w, r.WithContext(cxt))

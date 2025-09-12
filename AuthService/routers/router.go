@@ -18,7 +18,6 @@ func SetUpRouter(UserRouter Router) *chi.Mux {
 	// chiRouter.Get("/hello", controller.UserController.Hello)
 	
 	chiRouter.Use(middleware.RateLimiMiddleware)
-	// chiRouter.Use(middleware.JWTNextMiddleware)
 	chiRouter.With(middleware.JWTNextMiddleware).HandleFunc("/hotelservice/*", utils.ProxyToService("http://localhost:3000", "/hotelservice"))
 	chiRouter.With(middleware.JWTNextMiddleware).HandleFunc("/bookingservice/*", utils.ProxyToService("http://localhost:3001", "/bookingservice"))
 	

@@ -5,7 +5,6 @@ import (
 	service "AuthInGo/services"
 	utils "AuthInGo/utils"
 	"fmt"
-	"errors"
 	"net/http"
 )
 
@@ -44,28 +43,24 @@ func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
+	// Retrieve userID and email from context
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok {
+		http.Error(w, "User ID not found in context", http.StatusUnauthorized)
+		return
+	}
+	email, ok := r.Context().Value("email").(string)
+	if !ok {
+		http.Error(w, "Email not found in context", http.StatusUnauthorized)
+		return
+	}
 
-func (uc *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Fetching user by ID in UserController")
-	// extract userid from url parameters
-	userId := r.URL.Query().Get("id")
-	if userId == "" {
-		userId = r.Context().Value("userID").(string) // Fallback to context if not in URL
+	// Construct a profile response
+	profile := map[string]string{
+		"id":    userID,
+		"email": email,
 	}
 
-	if userId == "" {
-		utils.WriteErrorResponse(w, http.StatusBadRequest, "User ID is required", fmt.Errorf("missing user ID"))
-		return
-	}
-	user, err := uc.userService.GetUserById(userId)
-	if err != nil {
-		utils.WriteErrorResponse(w, http.StatusInternalServerError, "Failed to fetch user", err)
-		return
-	}
-	if user == nil {
-		utils.WriteErrorResponse(w, http.StatusNotFound, "User not found", errors.New("user not found"))
-		return
-	}
-	utils.WriteSuccessResponse(w, http.StatusOK, "User fetched successfully", user)
-	fmt.Println("User fetched successfully:", user)
+	utils.WriteSuccessResponse(w, http.StatusOK, "all user profiles", profile)
 }
