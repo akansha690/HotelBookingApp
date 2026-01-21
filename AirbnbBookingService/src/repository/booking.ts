@@ -39,3 +39,4 @@ export const deleteBooking = async function(_id: number){
         throw new Error("Booking not deleted")
     }
 }
+

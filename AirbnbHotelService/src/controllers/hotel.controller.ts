@@ -55,7 +55,7 @@ export async function deleteHotelHandler(req: Request, res: Response, next: Next
 
     // 2. Send the response
     res.status(StatusCodes.OK).json({
-        message: "Hotels deleted successfully",
+        message: "Hotel deleted successfully",
         data: hotelsResponse,
         success: true,
     });

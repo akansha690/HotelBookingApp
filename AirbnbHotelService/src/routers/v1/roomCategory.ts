@@ -11,10 +11,10 @@ roomCategoryRouter.post(
     reqValidator(roomCategorySchema),
     createRoomCategoryHandler
 );
-roomCategoryRouter.get('/:hotelId/categories', getAllRoomCategoriesHandler)
-roomCategoryRouter.get('/categories/:id', getRoomCategoryHandler)
-roomCategoryRouter.patch('/categories/:id/update', updateRoomCategoryHandler)
-roomCategoryRouter.delete('/categories/:id/delete', deleteRoomCategoryHandler)
+roomCategoryRouter.get('/:hotelId/roomcategories', getAllRoomCategoriesHandler)
+roomCategoryRouter.get('/:id', getRoomCategoryHandler)
+roomCategoryRouter.patch('/:id/update', updateRoomCategoryHandler)
+roomCategoryRouter.delete('/:id/delete', deleteRoomCategoryHandler)
 
 
 export default roomCategoryRouter;

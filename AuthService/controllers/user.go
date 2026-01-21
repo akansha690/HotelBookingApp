@@ -62,5 +62,5 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
 		"email": email,
 	}
 
-	utils.WriteSuccessResponse(w, http.StatusOK, "all user profiles", profile)
+	utils.WriteSuccessResponse(w, http.StatusOK, " user profile", profile)
 }

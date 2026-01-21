@@ -18,9 +18,13 @@ export async function createRoomHandler(req: Request, res: Response, next: NextF
 export async function getAllAvailableRoomsHandler(req: Request, res: Response, next: NextFunction) {
     // 1. Call the service layer
 
+    // console.log(req.query.categoryId)
+
     const categoryId = Number(req.query.categoryId);
     const checkInDate = new Date(req.query.checkInDate as string).toISOString();
     const checkOutDate = new Date(req.query.checkOutDate as string).toISOString();
+
+    // console.log(categoryId)
 
     const roomsResponse = await getAllRooms(categoryId, checkInDate, checkOutDate);
     // 2. Send the response

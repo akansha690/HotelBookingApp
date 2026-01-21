@@ -10,6 +10,7 @@ export const attachCorrelationIdMiddleware = (req: Request, res: Response, next:
 
     // Call the next middleware or route handler
 
+    // to bind the correlationId with the current asynchronous context
     asyncLocalStorage.run( { correlationId: correlationId } , () => {
         next();
     });

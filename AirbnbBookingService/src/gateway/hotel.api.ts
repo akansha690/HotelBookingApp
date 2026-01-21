@@ -4,6 +4,7 @@ import {serverConfig} from '../config'
 
 export async function getAllAvailableRooms(categoryId: number, checkInDate: string, checkOutDate: string){
 
+    console.log(categoryId, checkInDate, checkOutDate)
         const response = await axios.get(`${serverConfig.HOTEL_API_URL}/categories/allrooms`, 
             {
                 params:{

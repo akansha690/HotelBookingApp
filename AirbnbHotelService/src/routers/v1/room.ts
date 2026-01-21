@@ -1,7 +1,7 @@
 import express from 'express';
 import { reqValidator } from '../../validators';
 import { roomSchema } from '../../validators/roomSchema';
-import { createRoomHandler, deleteRoomHandler, getRoomHandler, reUpdateRoomBookingIdHandler, roomAvailabilityHandler, roomBookingHandler, updateRoomBookingId, updateRoomHandler } from '../../controllers/room.controller';
+import { createRoomHandler, deleteRoomHandler, getRoomHandler, reUpdateRoomBookingIdHandler, roomAvailabilityHandler, updateRoomBookingId, updateRoomHandler } from '../../controllers/room.controller';
 
 
 
@@ -12,11 +12,13 @@ roomRouter.post(
     reqValidator(roomSchema),
     createRoomHandler
 );
-roomRouter.get('/rooms/:id', getRoomHandler)
-roomRouter.patch('/rooms/:id/update', updateRoomHandler)
-roomRouter.delete('/rooms/:id/delete', deleteRoomHandler)
-roomRouter.get('/rooms/:id/availability', roomAvailabilityHandler)
-roomRouter.post('/rooms/:id/book', roomBookingHandler)
+roomRouter.get('/:id', getRoomHandler)
+roomRouter.patch('/:id/update', updateRoomHandler)
+roomRouter.delete('/:id/delete', deleteRoomHandler)
+// roomRouter.patch('/:id/book', roomBookingHandler)
+
+// for booking service -- axios http requests
+roomRouter.get('/:id/availability', roomAvailabilityHandler)
 roomRouter.patch('/update-booking-id', updateRoomBookingId)
 roomRouter.patch('/reupdate-booking-id', reUpdateRoomBookingIdHandler)
 

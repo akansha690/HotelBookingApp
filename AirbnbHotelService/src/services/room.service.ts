@@ -75,7 +75,8 @@ export async function roomBooking(roomId:number){
     if(!room){
         throw new Error("room not found")
     }
-    room.bookingId = Date.now()
+    room.bookingId = room.id
+    await room.save()
     return room
 }
 
