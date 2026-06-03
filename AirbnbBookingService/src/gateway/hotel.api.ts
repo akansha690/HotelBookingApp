@@ -2,7 +2,7 @@ import axios from 'axios'
 import {serverConfig} from '../config'
 
 
-export async function getAllAvailableRooms(categoryId: number, checkInDate: string, checkOutDate: string){
+export async function getAllAvailableRooms(categoryId: number, checkInDate: Date, checkOutDate: Date){
 
     console.log(categoryId, checkInDate, checkOutDate)
         const response = await axios.get(`${serverConfig.HOTEL_API_URL}/categories/allrooms`, 
@@ -14,7 +14,7 @@ export async function getAllAvailableRooms(categoryId: number, checkInDate: stri
                 }
             }
     ) 
-
+    console.log("availableRooms response:", response.data);
     return response.data
 }
 

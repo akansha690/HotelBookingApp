@@ -80,6 +80,24 @@ export async function roomBooking(roomId:number){
     return room
 }
 
+export async function getAllRoomsOfHotel(hotelId: number) {
+
+    const rooms = await roomRepository.findByHotel(hotelId);
+
+    return rooms;
+}
+
+export async function getRoomsByCategory(roomTypeId: number) {
+
+    const rooms = await roomRepository.getRoomsByCategory(roomTypeId);
+
+    if (!rooms) {
+        throw new Error("Rooms not found");
+    }
+
+    return rooms;
+}
+
 export async function updateBookingIdOfBookedRoomService(data:updateBookingIdRoomDTO){
     const updatedRoom = await roomRepository.updateBookingId(data.bookingId, data.roomsId);
     return updatedRoom;

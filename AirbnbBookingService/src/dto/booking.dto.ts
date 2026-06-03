@@ -13,5 +13,6 @@ export type booking= {
 export type updateRoomDTO ={
     id: number,
     categoryId:number,
-    dateOfAvailability:Date
+    dateOfAvailability:Date,
+    price: number
 }

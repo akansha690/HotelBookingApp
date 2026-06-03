@@ -39,9 +39,11 @@ func JWTNextMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Invalid token claims", http.StatusUnauthorized)	
 			return
 		}
-
+		userIdStr := strconv.FormatFloat(userId, 'f', 0, 64)
+		r.Header.Set("X-User-ID", userIdStr)
+		fmt.Println("USER HEADER:", r.Header.Get("X-User-ID"));
 		req_context := r.Context()
-		cxt := context.WithValue(req_context, "userID", strconv.FormatFloat(userId, 'f', 0, 64))
+		cxt := context.WithValue(req_context, "userID", userIdStr)
 		cxt = context.WithValue(cxt, "email", email)
 		next.ServeHTTP(w, r.WithContext(cxt))
 	})

@@ -1,13 +1,22 @@
 
 import express from 'express';
-import { cancelBookingHandler, createBookingHandler, finalBookingHandler } from '../../controllers/booking.controller';
+import { cancelBookingHandler, createBookingHandler, finalBookingHandler, getMyBookingsHandler } from '../../controllers/booking.controller';
 
 
 
 const bookingRouter = express.Router();
+/* ---------------- CREATE BOOKING ---------------- */
+bookingRouter.post("/", createBookingHandler);
 
-bookingRouter.post('/' ,createBookingHandler);
-bookingRouter.post('/final', finalBookingHandler);
-bookingRouter.delete('/:bookingId', cancelBookingHandler);
+bookingRouter.get(
+  "/my-bookings",
+  getMyBookingsHandler
+);
+
+/* ---------------- FINALIZE BOOKING ---------------- */
+bookingRouter.post("/final", finalBookingHandler);
+
+/* ---------------- CANCEL BOOKING ---------------- */
+bookingRouter.delete("/:bookingId", cancelBookingHandler);
 
 export default bookingRouter;

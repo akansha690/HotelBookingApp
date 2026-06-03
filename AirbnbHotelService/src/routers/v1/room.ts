@@ -1,7 +1,7 @@
 import express from 'express';
 import { reqValidator } from '../../validators';
 import { roomSchema } from '../../validators/roomSchema';
-import { createRoomHandler, deleteRoomHandler, getRoomHandler, reUpdateRoomBookingIdHandler, roomAvailabilityHandler, updateRoomBookingId, updateRoomHandler } from '../../controllers/room.controller';
+import { createRoomHandler, deleteRoomHandler, getAllRoomsOfHotelHandler, getRoomHandler, getRoomsByCategoryHandler, reUpdateRoomBookingIdHandler, roomAvailabilityHandler, updateRoomBookingId, updateRoomHandler } from '../../controllers/room.controller';
 
 
 
@@ -15,6 +15,15 @@ roomRouter.post(
 roomRouter.get('/:id', getRoomHandler)
 roomRouter.patch('/:id/update', updateRoomHandler)
 roomRouter.delete('/:id/delete', deleteRoomHandler)
+roomRouter.get(
+    '/categories/:categoryId/rooms',
+    getRoomsByCategoryHandler
+);
+roomRouter.get(
+   '/hotel/:hotelId',
+   getAllRoomsOfHotelHandler
+);
+
 // roomRouter.patch('/:id/book', roomBookingHandler)
 
 // for booking service -- axios http requests

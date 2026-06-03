@@ -8,7 +8,7 @@ import { attachCorrelationIdMiddleware } from './middlewares/correlation.middlew
 import sequelize from './models/sequelize';
 import { NotificationDto } from './dto/notification.dto';
 import { sendMailToQueue } from './producers/mail.producer';
-
+import "./utils/cron"
 
 const app = express();
 

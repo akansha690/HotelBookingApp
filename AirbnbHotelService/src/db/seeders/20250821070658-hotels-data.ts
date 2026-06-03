@@ -21,6 +21,60 @@ module.exports = {
         updated_at: new Date(),
         deleted_at: null,
       },
+      {
+        id: 3,
+        name: "City Lights Inn",
+        address: "22 MG Road",
+        location: "Bangalore",
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      },
+      {
+        id: 4,
+        name: "Desert Mirage Resort",
+        address: "88 Sand Dunes Road",
+        location: "Jaisalmer",
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      },
+      {
+        id: 5,
+        name: "Lakeview Palace",
+        address: "12 Lake Road",
+        location: "Udaipur",
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      },
+      {
+        id: 6,
+        name: "Urban Nest Hotel",
+        address: "77 Cyber Street",
+        location: "Hyderabad",
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      },
+      {
+        id: 7,
+        name: "Heritage Grand Stay",
+        address: "5 Fort Circle",
+        location: "Jaipur",
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      },
+      {
+        id: 8,
+        name: "Coastal Breeze Inn",
+        address: "19 Marine Drive",
+        location: "Mumbai",
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
+      },
     ]);
 
 
@@ -61,6 +115,9 @@ module.exports = {
         updated_at: new Date(),
         deleted_at: null,
       },
+      { id: 5, hotel_id: 3, room_type: "FAMILY", room_count: 12, created_at: new Date(), updated_at: new Date(), deleted_at: null },
+      { id: 6, hotel_id: 3, room_type: "DELUXE", room_count: 6, created_at: new Date(), updated_at: new Date(), deleted_at: null },
+
     ]);
 
      await queryInterface.bulkInsert('rooms', [
@@ -136,6 +193,9 @@ module.exports = {
       //   updated_at: new Date(),
       //   deleted_at: null,
       // },
+
+      { id: 7, hotel_id: 1, room_type_id: 1, price: 5200, room_no: 103, date_of_availability: "2025-06-08", booking_id: null, created_at: new Date(), updated_at: new Date(), deleted_at: null },
+      { id: 8, hotel_id: 2, room_type_id: 4, price: 6500, room_no: 203, date_of_availability: "2025-06-09", booking_id: null, created_at: new Date(), updated_at: new Date(), deleted_at: null },
     ]);
    
   },

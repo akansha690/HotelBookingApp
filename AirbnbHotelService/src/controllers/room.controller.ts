@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import { StatusCodes } from "http-status-codes";
-import { createRoom, deleteRoom, getRoomById, updateRoom, getAllRooms, isRoomAvailable, roomBooking, updateBookingIdOfBookedRoomService, reUpdateBookingIdOfBookedRoomService } from "../services/room.service";
+import { createRoom, deleteRoom, getRoomById, updateRoom, getAllRooms, isRoomAvailable, roomBooking, updateBookingIdOfBookedRoomService, reUpdateBookingIdOfBookedRoomService, getRoomsByCategory, getAllRoomsOfHotel } from "../services/room.service";
 
 export async function createRoomHandler(req: Request, res: Response, next: NextFunction) {
 
@@ -13,6 +13,42 @@ export async function createRoomHandler(req: Request, res: Response, next: NextF
         data: roomResponse,
         success: true,
     })
+}
+
+export async function getRoomsByCategoryHandler(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+
+    const roomTypeId = Number(req.params.categoryId);
+
+    const roomsResponse = await getRoomsByCategory(roomTypeId);
+
+    res.status(StatusCodes.OK).json({
+        message: "Rooms fetched successfully",
+        data: roomsResponse,
+        success: true,
+    });
+
+}
+
+export async function getAllRoomsOfHotelHandler(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+
+    const hotelId = Number(req.params.hotelId);
+
+    const rooms = await getAllRoomsOfHotel(hotelId);
+
+    res.status(StatusCodes.OK).json({
+        message: "Rooms fetched successfully",
+        data: rooms,
+        success: true,
+    });
+
 }
 
 export async function getAllAvailableRoomsHandler(req: Request, res: Response, next: NextFunction) {
@@ -95,22 +131,48 @@ export async function roomBookingHandler(req: Request, res: Response, next: Next
 }
 
 
-export const updateRoomBookingId = async (req: Request, res: Response, next: NextFunction) =>  {
-    
+export const updateRoomBookingId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  try {
+
     const bookingId = Number(req.query.bookingId);
+
     let roomsId: number[] = [];
-    roomsId = (req.query['roomsId[]'] as string[]).map(id => Number(id));
-    console.log(roomsId)
 
-    let data = {bookingId, roomsId}
-        const finalBooking = await updateBookingIdOfBookedRoomService(data);
-        res.status(StatusCodes.OK).json({
-            message: "Rooms BookingId updated successfully",
-            data: finalBooking,
-            success: true
-        })
+    const rawRooms = req.query.roomsId || req.query['roomsId[]'];
 
-}
+    if (!rawRooms) {
+      throw new Error("roomsId is missing");
+    }
+
+    // normalize to array
+    const roomArray = Array.isArray(rawRooms)
+      ? rawRooms
+      : [rawRooms];
+
+    roomsId = roomArray.map(id => Number(id));
+
+    console.log("ROOMS ID:", roomsId);
+
+    const data = { bookingId, roomsId };
+
+    const finalBooking =
+      await updateBookingIdOfBookedRoomService(data);
+
+    res.status(200).json({
+      message: "Rooms BookingId updated successfully",
+      data: finalBooking,
+      success: true,
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const reUpdateRoomBookingIdHandler = async (req: Request, res: Response, next: NextFunction) =>  {
     

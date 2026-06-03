@@ -34,17 +34,28 @@ export class RoomRepository extends BaseRepository<Room> {
         }
     }
 
-    async findByCategory(roomTypeId: number, checkInDate:string, checkOutDate:string) {
+    async findByCategory(roomTypeId: number, checkInDate: string, checkOutDate: string) {
+    return await this.model.findAll({
+        where: {
+            roomTypeId: roomTypeId,
+            bookingId: null,
+            dateOfAvailability: {
+                [Op.lte]: checkInDate   
+            }
+        }
+    });
+}
+
+    async getRoomsByCategory(roomTypeId: number) {
+
         return await this.model.findAll({
             where: {
-                roomTypeId:roomTypeId,
-                bookingId: null,
-                dateOfAvailability:{
-                    [Op.between] : [checkInDate , checkOutDate]
-                }
+                roomTypeId: roomTypeId
             }
-        }); 
+        });
+
     }
+
 
     async findByHotel(hotelId: number) {
         return await this.model.findAll({
