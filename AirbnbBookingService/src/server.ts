@@ -6,8 +6,8 @@ import { appErrorHandler } from './middlewares/error.middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import sequelize from './models/sequelize';
-import { NotificationDto } from './dto/notification.dto';
-import { sendMailToQueue } from './producers/mail.producer';
+// import { NotificationDto } from './dto/notification.dto';
+// import { sendMailToQueue } from './producers/mail.producer';
 import "./utils/cron"
 
 const app = express();
@@ -34,13 +34,13 @@ app.listen(serverConfig.PORT, async() => {
     logger.info(`Press Ctrl+C to stop the server.`);
     await sequelize.authenticate();
 
-   const notification : NotificationDto={
-      to : "John booking",
-      subject: "Dev Project",
-      body : `Hey, Thanks for booking with Airbnb welcome!!!`
-   }
+   // const notification : NotificationDto={
+   //    to : "John booking",
+   //    subject: "Dev Project",
+   //    body : `Hey, Thanks for booking with Airbnb welcome!!!`
+   // }
 
-   sendMailToQueue(notification);
+   // sendMailToQueue(notification);
 //    setUpWorkerMail();
     
 });
