@@ -27,7 +27,7 @@ const redisConnection = ()=>{
 }
 
 export const getRedisConnection = redisConnection();
-export const redlock = new Redlock([getRedisConnection()], {
+export const redlock = new Redlock([getRedisConnection() as any], {
     retryCount:10,
     retryDelay:200,
 })
