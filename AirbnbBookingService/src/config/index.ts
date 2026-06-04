@@ -11,6 +11,9 @@ type ServerConfig = {
 function loadEnv() {
     dotenv.config();
     console.log(`Environment variables loaded`);
+    console.log('REDIS_SERVER_URL:', process.env.REDIS_SERVER_URL);
+    console.log('DB_USER:', process.env.DB_USER);
+    console.log('DB_HOST:', process.env.DB_HOST);
 }
 
 loadEnv();
