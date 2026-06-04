@@ -36,7 +36,7 @@ func ApplicationConstructor(cfg Config) *Application {
 func ConfigConstructor() Config{
 	port := config.GetString("PORT", ":8080")
 	return Config{
-		Addr: port,
+		 Addr: ":" + port,
 	}
 }
 
