@@ -17,7 +17,7 @@ export const loadEnv= ()=>{
 loadEnv();
 
 export const serverConfig:config = {
-    PORT: Number(process.env.PORT) || 3001,
+    PORT: Number(process.env.PORT) || 3000,
 }
 
 export const dbConfig: DBConfig = {
