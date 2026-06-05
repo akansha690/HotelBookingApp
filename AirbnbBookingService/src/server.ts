@@ -5,7 +5,6 @@ import v2Router from './routers/v2/index.router';
 import { appErrorHandler } from './middlewares/error.middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
-import cors from "cors";
 // import { NotificationDto } from './dto/notification.dto';
 // import { sendMailToQueue } from './producers/mail.producer';
 import "./utils/cron"
@@ -14,16 +13,6 @@ const app = express();
 
 app.use(express.json());
 
-
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://codewithvision.com"
-    ],
-    credentials: true,
-  })
-);
 
 /**
  * Registering all the routers and their corresponding routes with out app server object.
