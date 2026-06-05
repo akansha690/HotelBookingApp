@@ -1,6 +1,7 @@
 
 MIGRATIONS_DIR=db/migrations
-DB_URL=root:admin12@tcp(127.0.0.1:3306)/airbnb_auth_dev
+# DB_URL=root:admin12@tcp(127.0.0.1:3306)/airbnb_auth_dev
+DB_URL=root:hccAARxpRxTLfiftXOsiEERUrFZrPcuC@tcp(mysql.railway.internal:3306)/airbnb_auth_dev
 
 migrate-create:
 	goose -dir $(MIGRATIONS_DIR) create $(name) sql
