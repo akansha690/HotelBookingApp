@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
+	"time"
 )
 
 type UserService interface {
@@ -52,6 +53,7 @@ func (u *UserServiceImp) LoginUser(email string, password string) (string, error
 	payload := jwt.MapClaims{
 		"id" : user.Id,
 		"email" : user.Email,
+		"exp":   time.Now().Add(time.Hour * 1).Unix(),
 	} 
 	// unsigned JWTtoken
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
