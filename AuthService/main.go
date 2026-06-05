@@ -14,6 +14,7 @@ func main(){
 	app:= app.ApplicationConstructor(cfg)
 	if app == nil {
         fmt.Println("Failed to initialize application")
+        fmt.Println("exiting")
         os.Exit(1)
     }
 	app.Run()
